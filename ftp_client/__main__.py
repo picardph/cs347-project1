@@ -6,8 +6,8 @@ port = 3927
 
 def Connect(ip=ip, port=port):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.connect(ip, port)
-    print("Connected to " + str(ip) + ":" + port)
+    soc.connect((ip, port))
+    print("Connected to " + str(ip) + ":" + str(port))
 
 
 def List():
@@ -21,3 +21,6 @@ def Store():
 
 def End():
     pass
+
+
+Connect()
