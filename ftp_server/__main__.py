@@ -1,13 +1,34 @@
-from pyftpdlib.authorizers import DummyAuthorizer
-from pyftpdlib.handlers import FTPHandler
-from pyftpdlib.servers import FTPServer
-import os
+import socket
 
-authorizer = DummyAuthorizer()
-authorizer.add_user("user", "1234", os.getcwd(), perm="lradfwMT")
+def server():
 
-handler = FTPHandler
-handler.authorizer = authorizer
+    host = socket.gethostname()
+    port = 2468
 
-server = FTPServer(("127.0.0.1", 21), handler)
-server.serve_forever()
+    #create the socket
+    server_socket = socket.socket()
+
+    #bind the socket using the host and port number
+    server_socket.bind((host, port))
+
+    #listen for 2 clients
+    server_socket.listen(2)
+
+    #accepting connections
+    connection, address = server_socket.accept()
+    print("Connection from: " + str(address))
+
+    #keep looping
+    while True:
+        # receive data stream with packets up to 1024 bytes
+        data = connection.recv(1024).decode()
+        if not data:
+            # if data is not received then break out of loop
+            break
+        print("From connected user: " + str(data))
+        data = input(' -> ')
+        # send data to the client
+        connection.send(data.encode())
+
+    # Out of loop: close connection
+    connection.close()
