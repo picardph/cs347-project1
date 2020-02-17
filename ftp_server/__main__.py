@@ -1,34 +1,20 @@
 import socket
+import socketserver
+import os
 
-def server():
 
-    host = socket.gethostname()
-    port = 2468
+class FileServerHandler(socketserver.BaseRequestHandler):
+    def handle(self):
+        data: str = self.request.recv(1024).strip()
+        data.split(' ')
+        response = ''
+        if data[0] == 'list' or data[0] == 'LIST':
+            for f in os.listdir(''):
+                response += f + ' '
+            response.strip()
+        self.request.sendall(response.encode())
 
-    #create the socket
-    server_socket = socket.socket()
 
-    #bind the socket using the host and port number
-    server_socket.bind((host, port))
-
-    #listen for 2 clients
-    server_socket.listen(2)
-
-    #accepting connections
-    connection, address = server_socket.accept()
-    print("Connection from: " + str(address))
-
-    #keep looping
-    while True:
-        # receive data stream with packets up to 1024 bytes
-        data = connection.recv(1024).decode()
-        if not data:
-            # if data is not received then break out of loop
-            break
-        print("From connected user: " + str(data))
-        data = input(' -> ')
-        # send data to the client
-        connection.send(data.encode())
-
-    # Out of loop: close connection
-    connection.close()
+host, port = "localhost", 2468
+tcp_server = socketserver.TCPServer((host, port), FileServerHandler)
+tcp_server.serve_forever()
