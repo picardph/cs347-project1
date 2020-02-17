@@ -6,17 +6,19 @@
 import socket
 
 def client():
-    flag = 1
+
+
+    flag = True
+    connected = False
 
     #Get the Host name
-    host = socket.gethostname()
+    host = None
 
     #socket server port number
-    port = 2468
+    port = None
 
-    # making the socket and connecting to the server
+    # making the socket
     client_socket = socket.socket()
-    client_socket.connect((host, port))
 
     #loop to continuously accept user input.
     while(flag):
@@ -31,13 +33,23 @@ def client():
             if(len(command) != 3):
                 print("CONNECT format: connect <HOST NAME> <PORT NO>")
             else:
-                client_socket.send(userInput.encode())
+                host = command[1]
+                #converting port number to an integer
+                port = type(int(command[2]))
+                client_socket.connect((host, port))
+                connected = True
+
         if(command[0] == "list" or command[0] == "LIST"):
-            client_socket.send(userInput.encode())
+            if(connected == False):
+                print("Please Connect to Server")
+            else:
+                client_socket.send(userInput.encode())
 
         if (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
+            elif(connected == False):
+                print("Please Connect to Server")
             else:
                 client_socket.send(userInput.encode())
 
@@ -45,16 +57,20 @@ def client():
         if (command[0] == "store" or command[0] == "STORE"):
             if (len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
+            elif (connected == False):
+                print("Please Connect to Server")
             else:
-                client_socket.send(userInput.encode())
+                client_socket.sendfile(userInput)
 
         if (command[0] == "quit" or command[0] == "QUIT"):
             client_socket.send(userInput.encode())
+            client_socket.detach()
 
         #loop break to end program
         if(command[0] == "exit"):
             flag = 0
 
+        client_socket.listen()
         #display response from server
         server_data = client_socket.recv(1024).decode()
 
