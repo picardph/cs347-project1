@@ -43,9 +43,9 @@ def client():
             if(connected == False):
                 print("Please Connect to Server")
             else:
-                client_socket.send(userInput.encode())
+                client_socket.sendall(userInput.encode("utf-8"))
                 # Wait for the response from the server.
-                print(str(client_socket.recv(1024).strip()))
+                print(client_socket.recv(1024).decode("utf-8"))
 
         if (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):
@@ -63,6 +63,9 @@ def client():
                 print("Please Connect to Server")
             else:
                 client_socket.sendfile(userInput)
+
+        if (command[0] == "kill_server" and connected):
+            client_socket.sendall("kill_server".encode("utf-8"))
 
         if (command[0] == "quit" or command[0] == "QUIT"):
             client_socket.send(userInput.encode())
