@@ -35,7 +35,7 @@ def client():
             else:
                 host = command[1]
                 #converting port number to an integer
-                port = type(int(command[2]))
+                port = int(command[2])
                 client_socket.connect((host, port))
                 connected = True
 
@@ -44,6 +44,8 @@ def client():
                 print("Please Connect to Server")
             else:
                 client_socket.send(userInput.encode())
+                # Wait for the response from the server.
+                print(str(client_socket.recv(1024).strip()))
 
         if (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):
@@ -70,12 +72,15 @@ def client():
         if(command[0] == "exit"):
             flag = 0
 
-        client_socket.listen()
         #display response from server
-        server_data = client_socket.recv(1024).decode()
+        #if connected:
+            #server_data = client_socket.recv(1024).decode()
 
         # print the data to terminal
-        print('Received from server: ' + server_data)
+        #print('Received from server: ' + server_data)
 
     #out of loop: close socket before termination
     client_socket.close()
+
+
+client()
