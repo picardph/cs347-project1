@@ -1,9 +1,6 @@
 import socketserver
 import os
 
-global running
-running = True
-
 
 class FileServerHandler(socketserver.BaseRequestHandler):
     def handle(self):
@@ -16,15 +13,13 @@ class FileServerHandler(socketserver.BaseRequestHandler):
                 response += f + ' '
             response.strip()
             self.request.sendall(response.encode())
-        if data[0] == 'kill_server':
-            global running
-            running = False
 
 
 host, port = "localhost", 2468
 tcp_server = socketserver.TCPServer((host, port), FileServerHandler)
 
-while running:
-    tcp_server.handle_request()
-
-tcp_server.shutdown()
+try:
+    tcp_server.serve_forever()
+except KeyboardInterrupt:
+    tcp_server.shutdown()
+    tcp_server.server_close()

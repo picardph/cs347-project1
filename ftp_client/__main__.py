@@ -64,9 +64,6 @@ def client():
             else:
                 client_socket.sendfile(userInput)
 
-        if (command[0] == "kill_server" and connected):
-            client_socket.sendall("kill_server".encode("utf-8"))
-
         if (command[0] == "quit" or command[0] == "QUIT"):
             client_socket.send(userInput.encode())
             client_socket.detach()
