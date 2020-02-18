@@ -40,7 +40,7 @@ def client():
                 connected = True
 
         if(command[0] == "list" or command[0] == "LIST"):
-            if(connected == False):
+            if not connected:
                 print("Please Connect to Server")
             else:
                 client_socket.sendall(userInput.encode("utf-8"))
@@ -50,19 +50,28 @@ def client():
         if (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
-            elif(connected == False):
+            elif not connected:
                 print("Please Connect to Server")
             else:
-                client_socket.send(userInput.encode())
+                client_socket.sendall(userInput.encode())
 
 
         if (command[0] == "store" or command[0] == "STORE"):
             if (len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
-            elif (connected == False):
+            elif not connected:
                 print("Please Connect to Server")
             else:
-                client_socket.sendfile(userInput)
+                #getting filename from command
+                filename = command[1]
+
+                #open the file to parse
+                with open(filename, 'r') as fs:
+
+                    while True:
+                        #reading 1024 bytes from file
+                        data = fs.read(1024)
+
 
         if (command[0] == "quit" or command[0] == "QUIT"):
             client_socket.send(userInput.encode())
