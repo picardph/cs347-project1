@@ -4,6 +4,7 @@
 # 2/8/2020
 
 import socket
+import io
 
 def client():
 
@@ -38,8 +39,9 @@ def client():
                 port = int(command[2])
                 client_socket.connect((host, port))
                 connected = True
+                print("Connected to " + str(host) + ":" + str(port))
 
-        if(command[0] == "list" or command[0] == "LIST"):
+        elif(command[0] == "list" or command[0] == "LIST"):
             if not connected:
                 print("Please Connect to Server")
             else:
@@ -47,16 +49,30 @@ def client():
                 # Wait for the response from the server.
                 print(client_socket.recv(1024).decode("utf-8"))
 
-        if (command[0] == "retrieve" or command[0] == "RETRIEVE"):
+        elif (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
             elif not connected:
                 print("Please Connect to Server")
             else:
-                client_socket.sendall(userInput.encode())
+                client_socket.sendall(userInput.encode("utf-8"))
+
+                f = open(command[1], 'wb')
+
+                # Receiving data from server and writing to file.
+                data = client_socket.recv(1024)
+                while data != b'':
+                    f.write(data)
+                    data = client_socket.recv(1024)
+
+                #Sending empty byte to notify server file is finished on client.
+                #client_socket.sendall(b'')
+                #print(client_socket.recv(1024))
+                f.close()
+                print("Completed.")
 
 
-        if (command[0] == "store" or command[0] == "STORE"):
+        elif (command[0] == "store" or command[0] == "STORE"):
             if (len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
             elif not connected:
@@ -73,13 +89,16 @@ def client():
                         data = fs.read(1024)
 
 
-        if (command[0] == "quit" or command[0] == "QUIT"):
+        elif (command[0] == "quit" or command[0] == "QUIT"):
             client_socket.send(userInput.encode())
             client_socket.detach()
 
         #loop break to end program
-        if(command[0] == "exit"):
+        elif(command[0] == "exit"):
             flag = 0
+        
+        else:
+            print("Command not recognised.\nValid commands: CONNECT, LIST, RETREIVE, STORE, QUIT, EXIT")
 
         #display response from server
         #if connected:
