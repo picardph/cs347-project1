@@ -12,12 +12,6 @@ def client():
     flag = True
     connected = False
 
-    #Get the Host name
-    host = None
-
-    #socket server port number
-    port = None
-
     # making the socket
     client_socket = socket.socket()
 
@@ -34,20 +28,24 @@ def client():
             if(len(command) != 3):
                 print("CONNECT format: connect <HOST NAME> <PORT NO>")
             else:
+                # getting host by name
                 host = command[1]
-                #converting port number to an integer
+                # converting port number to an integer
                 port = int(command[2])
+
+
                 client_socket.connect((host, port))
                 connected = True
-                print("Connected to " + str(host) + ":" + str(port))
+                print("Connected to " + str(host) + ":" + str(port) + "\n")
 
         elif(command[0] == "list" or command[0] == "LIST"):
             if not connected:
-                print("Please Connect to Server")
+                print("Please Connect to Server\n")
             else:
-                client_socket.sendall(userInput.encode("utf-8"))
+                client_socket.sendall(userInput.encode())
                 # Wait for the response from the server.
-                print(client_socket.recv(1024).decode("utf-8"))
+                print(client_socket.recv(1024).decode())
+                print("\n")
 
         elif (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):
@@ -55,21 +53,17 @@ def client():
             elif not connected:
                 print("Please Connect to Server")
             else:
-                client_socket.sendall(userInput.encode("utf-8"))
+                client_socket.sendall(userInput.encode())
 
-                f = open(command[1], 'wb')
+                # Wait for the response from the server.
+                print(client_socket.recv(1024).decode())
 
                 # Receiving data from server and writing to file.
-                data = client_socket.recv(1024)
-                while data != b'':
+                data = client_socket.recv(4096)
+                with open(command[1], 'wb+') as f:
                     f.write(data)
-                    data = client_socket.recv(1024)
+                    print("File Retrieved: Saved as " + command[1] + "\n")
 
-                #Sending empty byte to notify server file is finished on client.
-                #client_socket.sendall(b'')
-                #print(client_socket.recv(1024))
-                f.close()
-                print("Completed.")
 
 
         elif (command[0] == "store" or command[0] == "STORE"):
@@ -78,36 +72,25 @@ def client():
             elif not connected:
                 print("Please Connect to Server")
             else:
-                #getting filename from command
-                filename = command[1]
+                # send command to server
+                client_socket.sendall(userInput.encode())
 
-                #open the file to parse
-                with open(filename, 'r') as fs:
+                # Wait for the response from the server.
+                print(client_socket.recv(1024).decode())
 
-                    while True:
-                        #reading 1024 bytes from file
-                        data = fs.read(1024)
+                file = command[1]
+                f = open(file, "rb")
+
+                client_socket.sendall(f.read())
 
 
         elif (command[0] == "quit" or command[0] == "QUIT"):
-            client_socket.send(userInput.encode())
-            client_socket.detach()
-
-        #loop break to end program
-        elif(command[0] == "exit"):
-            flag = 0
+            #just need to break the loop
+            break
         
         else:
-            print("Command not recognised.\nValid commands: CONNECT, LIST, RETREIVE, STORE, QUIT, EXIT")
+            print("Command not recognised.\nValid commands: CONNECT, LIST, RETRIEVE, STORE, QUIT, EXIT")
 
-        #display response from server
-        #if connected:
-            #server_data = client_socket.recv(1024).decode()
-
-        # print the data to terminal
-        #print('Received from server: ' + server_data)
-
-    #out of loop: close socket before termination
     client_socket.close()
 
 
