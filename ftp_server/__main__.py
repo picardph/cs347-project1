@@ -66,6 +66,10 @@ class FileServerHandler(object):
                 if data[0] == 'list' or data[0] == 'LIST':
                     list(client)
 
+                if data[0] == 'quit' or data[0] == 'QUIT':
+                    client.close()
+                    break
+
                 if data[0] == 'retrieve' or data[0] == 'RETRIEVE':
                     sendFile(client, data[1])
 

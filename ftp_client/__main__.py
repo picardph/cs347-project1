@@ -85,6 +85,7 @@ def client():
 
 
         elif (command[0] == "quit" or command[0] == "QUIT"):
+            client_socket.sendall(userInput.encode())
             #just need to break the loop
             break
         
