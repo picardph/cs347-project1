@@ -45,7 +45,7 @@ def client():
                 client_socket.sendall(userInput.encode())
                 # Wait for the response from the server.
                 print(client_socket.recv(1024).decode())
-                print("\n")
+                # print("\n")
 
         elif (command[0] == "retrieve" or command[0] == "RETRIEVE"):
             if(len(command) != 2):

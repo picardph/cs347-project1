@@ -58,7 +58,7 @@ class FileServerHandler(object):
             try:
                 data = client.recv(1024).decode()
                 data = data.split(' ')
-                print("Got data from client.")
+                print("Received command from client.")
 
                 if not data:
                     break
@@ -88,7 +88,7 @@ class FileServerHandler(object):
 
         while True:
             client, address = self.socket.accept()
-            print("Connection Accepted From: " + str(address))
+            print("Connection accepted From: " + str(address))
 
             client.settimeout(30)
             threading.Thread(target = self.handle, args = (client, address)).start()
@@ -98,5 +98,8 @@ class FileServerHandler(object):
 
 host = "localhost"
 port = 2468
-print("Server is running on port number: %d" % port + "\n")
+print("======================================")
+print("Server is running on port number: %d" % port)
+print ("Awaiting client connection...")
+print("======================================")
 FileServerHandler(host, port).listenForSockets()
