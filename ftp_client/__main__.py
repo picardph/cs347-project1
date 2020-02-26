@@ -22,7 +22,9 @@ def client():
 
         command = userInput.split()
 
-        if(command[0] == "connect" or command[0] == "CONNECT"):
+        if len(command) == 0:
+            pass
+        elif(command[0] == "connect" or command[0] == "CONNECT"):
 
             if(len(command) != 3):
                 print("CONNECT format: connect <HOST NAME> <PORT NO>")
@@ -84,7 +86,11 @@ def client():
 
 
         elif (command[0] == "quit" or command[0] == "QUIT"):
-            client_socket.sendall(userInput.encode())
+            try:
+                client_socket.sendall(userInput.encode())
+            except:
+                # If client was not connected, a broken pipe exception will be raised.
+                pass
             #just need to break the loop
             break
         
