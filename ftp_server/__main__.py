@@ -90,7 +90,7 @@ class FileServerHandler(object):
             client, address = self.socket.accept()
             print("Connection accepted From: " + str(address))
 
-            client.settimeout(30)
+            client.settimeout(120)
             threading.Thread(target = self.handle, args = (client, address)).start()
 
 
