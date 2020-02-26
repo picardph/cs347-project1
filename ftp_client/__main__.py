@@ -34,10 +34,12 @@ def client():
                 # converting port number to an integer
                 port = int(command[2])
 
-
-                client_socket.connect((host, port))
-                connected = True
-                print("Connected to: " + str(host) + ":" + str(port) + "\n")
+                try:
+                    client_socket.connect((host, port))
+                    connected = True
+                    print("Connected to: " + str(host) + ":" + str(port) + "\n")
+                except:
+                    print("Failed to connect to server.")
 
         elif(command[0] == "list" or command[0] == "LIST"):
             if not connected:
