@@ -57,11 +57,11 @@ class FileServerHandler(object):
 
             try:
                 data = client.recv(1024).decode()
-                data = data.split(' ')
-                print("Received command from client.")
-
                 if not data:
                     break
+
+                data = data.split(' ')
+                print("Received command from client.")
 
                 if data[0] == 'list' or data[0] == 'LIST':
                     list(client)
