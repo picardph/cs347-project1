@@ -17,8 +17,7 @@ def client():
 
     #loop to continuously accept user input.
     while(flag):
-
-        print("Enter A Command: ")
+        print("Enter a command (CONNECT, LIST, RETRIEVE, STORE, QUIT): ")
         userInput = str(input())
 
         command = userInput.split()
@@ -36,11 +35,11 @@ def client():
 
                 client_socket.connect((host, port))
                 connected = True
-                print("Connected to " + str(host) + ":" + str(port) + "\n")
+                print("Connected to: " + str(host) + ":" + str(port) + "\n")
 
         elif(command[0] == "list" or command[0] == "LIST"):
             if not connected:
-                print("Please Connect to Server\n")
+                print("Please connect to server.\n")
             else:
                 client_socket.sendall(userInput.encode())
                 # Wait for the response from the server.
@@ -51,7 +50,7 @@ def client():
             if(len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
             elif not connected:
-                print("Please Connect to Server")
+                print("Please connect to server.")
             else:
                 client_socket.sendall(userInput.encode())
 
@@ -62,7 +61,7 @@ def client():
                 data = client_socket.recv(4096)
                 with open(command[1], 'wb+') as f:
                     f.write(data)
-                    print("File Retrieved: Saved as " + command[1] + "\n")
+                    print("File Retrieved: saved as " + command[1] + "\n")
 
 
 
@@ -70,7 +69,7 @@ def client():
             if (len(command) != 2):
                 print("RETRIEVE format: retrieve <filename>")
             elif not connected:
-                print("Please Connect to Server")
+                print("Please connect to server.")
             else:
                 # send command to server
                 client_socket.sendall(userInput.encode())
